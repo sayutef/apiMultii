@@ -12,7 +12,7 @@ router = APIRouter(
     tags=["Students"]
 )
 
-@router.post("/classes", response_model=schemas.Enrolled, dependencies=[Depends(student_middleware)])
+@router.post("/classes", response_model=schemas.Enrolled)
 def add_student_to_class(
     enrollment_data: schemas.EnrolledCreate,
     db: Session = Depends(get_db)

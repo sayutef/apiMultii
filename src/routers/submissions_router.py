@@ -5,13 +5,14 @@ from src.models import models
 from src.schemas import schemas
 from src.controllers import submissions_controller
 from src.db.database import get_db
+from src.middlewares.auth_middleware import teacher_middleware, generic_middleware, student_middleware
 
 router = APIRouter(
     prefix="/submissions",
     tags=["Submissions"]
 )
 
-@router.post("/", response_model=schemas.Submission, status_code=201)
+@router.post("/", response_model=schemas.Submission, status_code=201, )
 def create_submission(
     submission_data: schemas.SubmissionCreate,
     db: Session = Depends(get_db)

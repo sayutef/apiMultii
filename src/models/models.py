@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Text, ForeignKey, BigInteger
+from sqlalchemy import Column, Integer, String, Date, Text, ForeignKey, BigInteger, Boolean
 from sqlalchemy.orm import relationship
 from config import Base
 
@@ -19,7 +19,9 @@ class Student(Base):
     registration_number = Column(BigInteger, unique=True, index=True)
     password = Column(String(255))
     enrollments = relationship("Enrolled", back_populates="student")
-    submissions = relationship("Submission", back_populates="student")  
+    submissions = relationship("Submission", back_populates="student")
+    progress = relationship("Progress", back_populates="student", uselist=False)  # Relación con Progress (progreso)
+    premium = relationship("Premium", back_populates="student", uselist=False) 
 
 class Task(Base):
     __tablename__ = "task"
@@ -93,3 +95,22 @@ class Submission(Base):
 
 # class WriteAndRead(Video):
 #     __tablename__ = "write_and_read"
+
+class Progress(Base):
+    __tablename__ = "progress"
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    student_id = Column(BigInteger, ForeignKey("student.id"), nullable=False)  # Relación con el modelo Student
+    counter_point = Column(Integer, nullable=False)  # Reemplazamos counterPoint con counter_point
+
+    # Relación con el modelo Student
+    student = relationship("Student", back_populates="progress") 
+    
+class Premium(Base):
+    __tablename__ = "premium"
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    student_id = Column(BigInteger, ForeignKey("student.id"), nullable=False)  # idStudent es una FK a student.id
+    is_active = Column(Boolean, default=False)
+
+    student = relationship("Student", back_populates="premium") 

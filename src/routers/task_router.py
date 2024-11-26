@@ -9,8 +9,7 @@ from src.middlewares.auth_middleware import teacher_middleware
 
 router = APIRouter(
     prefix="/tasks",
-    tags=["Tasks"],
-    dependencies=[Depends(teacher_middleware)]
+    tags=["Tasks"]
 )
 
 @router.get("/", response_model=list[schemas.Task])

@@ -33,3 +33,26 @@ async def student_middleware(
     
     request.state.student = student
     return student
+
+async def generic_middleware(
+    request: Request,
+    token: dict = Depends(verify_token),
+    db: Session = Depends(get_db),
+):
+    
+    if not ("student_id" in token or "teacher_id" in token):
+        raise HTTPException(status_code=401, detail="Token inválido")
+    
+    student = db.query(Student).filter(Student.id == token.get("student_id")).first() if "student_id" in token else None
+        
+    teacher = db.query(Teacher).filter(Teacher.id == token.get("teacher_id")).first() if "teacher_id" in token else None
+
+    if not student and not teacher:
+        raise HTTPException(status_code=401, detail="Usuario no encontrado")
+    
+    if student:
+        request.state.student = student
+        return student
+    else:
+        request.state.teacher = teacher
+        return teacher

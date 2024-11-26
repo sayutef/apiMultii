@@ -2,8 +2,14 @@ from sqlalchemy.orm import Session
 from src.models import models
 from src.schemas import schemas
 
-def create_class(db: Session, classi: schemas.ClassCreate):
-    db_class = models.Class(**classi.dict())
+def create_class(db: Session, classi: schemas.ClassCreate, teacher_id: int):
+    # Crear la clase asignando explícitamente el teacher_id
+    db_class = models.Class(
+        id=classi.id,
+        name=classi.name,
+        description=classi.description,
+        teacher_id=teacher_id  # Se asigna automáticamente al profesor autenticado
+    )
     db.add(db_class)
     db.commit()
     db.refresh(db_class)
